@@ -14,8 +14,12 @@ module.exports = {
         '/v1': {
             target: 'https://dev-mapi.mifpay.com',
             changeOrigin: true,
+            secure: false,
             pathRewrite: {
                 '^/v1': '/v1'
+            },
+            headers: {
+                Referer: 'https://dev-mapi.mifpay.com'
             }
         }
     },
@@ -51,7 +55,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: './',
 
     /**
      * Source Maps

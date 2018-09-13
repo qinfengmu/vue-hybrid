@@ -2,7 +2,11 @@
 const path = require('path')
 const config = require('../config')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const packageConfig = require('../package.json')
+const glob = require('glob')
+const PAGE_PATH = path.resolve(__dirname,'../src/pages')
+const merge = require('webpack-merge')
 
 exports.assetsPath = function (_path) {
   const assetsSubDirectory = process.env.NODE_ENV === 'production'
@@ -99,3 +103,46 @@ exports.createNotifierCallback = () => {
     })
   }
 }
+exports.entries = () => {
+    const entriesFiles = glob.sync(PAGE_PATH+'/*/*.js');
+    let map = {};
+    entriesFiles.forEach((filePath)=>{
+        let fileName = filePath.substring(filePath.lastIndexOf('\/')+1,filePath.lastIndexOf('.'));
+        map[fileName] = filePath;
+    });
+    return map;
+};
+
+exports.htmlPlugin = ()=>{
+    const entriesHtml = glob.sync(PAGE_PATH+'/*/*.html');
+    let arr = [];
+    entriesHtml.forEach((filePath)=>{
+        let fileName = filePath.substring(filePath.lastIndexOf('\/')+1,filePath.lastIndexOf('.'));
+        let conf = {
+            template: filePath,
+            filename: fileName+'.html',
+            inject: true,
+            // 页面模板需要加对应的js脚本，如果不加这行则每个页面都会引入所有的js脚本
+            chunks: ['manifest', 'vendor', fileName],
+
+        };
+        if(process.env.NODE_ENV === 'production'){
+            conf = merge(conf,{
+                minify: {
+                    removeComments: true,
+                    collapseWhitespace: true,
+                    removeAttributeQuotes: true
+                    // more options:
+                    // https://github.com/kangax/html-minifier#options-quick-reference
+                },
+                // necessary to consistently work with multiple chunks via CommonsChunkPlugin
+                chunksSortMode: 'dependency'
+            })
+        }else if(process.env.NODE_ENV === 'development'){
+            conf = merge(conf,{});
+        }
+        arr.push(new HtmlWebpackPlugin(conf));
+    });
+    console.log(arr);
+    return arr;
+};
