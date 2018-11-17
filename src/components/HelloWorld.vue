@@ -1,85 +1,8 @@
 <template>
     <div class="hello">
-        <h1>{{ msg }}</h1>
-        <h2>Essential Links</h2>
-        <ul>
-            <li>
-                <a
-                        href="https://vuejs.org"
-                        target="_blank"
-                >
-                    Core Docs
-                </a>
-            </li>
-            <li>
-                <a
-                        href="https://forum.vuejs.org"
-                        target="_blank"
-                >
-                    Forum
-                </a>
-            </li>
-            <li>
-                <a
-                        href="https://chat.vuejs.org"
-                        target="_blank"
-                >
-                    Community Chat
-                </a>
-            </li>
-            <li>
-                <a
-                        href="https://twitter.com/vuejs"
-                        target="_blank"
-                >
-                    Twitter
-                </a>
-            </li>
-            <br>
-            <li>
-                <a
-                        href="http://vuejs-templates.github.io/webpack/"
-                        target="_blank"
-                >
-                    Docs for This Template
-                </a>
-            </li>
-        </ul>
-        <h2>Ecosystem</h2>
-        <ul>
-            <li>
-                <a
-                        href="http://router.vuejs.org/"
-                        target="_blank"
-                >
-                    vue-router
-                </a>
-            </li>
-            <li>
-                <a
-                        href="http://vuex.vuejs.org/"
-                        target="_blank"
-                >
-                    vuex
-                </a>
-            </li>
-            <li>
-                <a
-                        href="http://vue-loader.vuejs.org/"
-                        target="_blank"
-                >
-                    vue-loader
-                </a>
-            </li>
-            <li>
-                <a
-                        href="https://github.com/vuejs/awesome-vue"
-                        target="_blank"
-                >
-                    awesome-vue
-                </a>
-            </li>
-        </ul>
+        <h1>请求测试</h1>
+        <p>{{ msg }}</p>
+        <img src="../assets/test.jpg" alt="">
     </div>
 </template>
 
@@ -88,16 +11,17 @@
         name: 'HelloWorld',
         data () {
             return {
-                msg: 'Welcome to Your Vue.js App'
+                msg: ''
             }
         },
         created: function () {
-            this.getDetail()
+            this.getDetail();
         },
         methods: {
             getDetail: function () {
                 this.$ajax.post('/v1/getCouponDetail',JSON.stringify({sessionId:'a',type:'021001'})).then((res)=>{
                     console.log(res);
+                    this.msg = res.data;
                 })
             }
         }
@@ -106,6 +30,9 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    img {
+        width: 100%;
+    }
     h1, h2 {
         font-weight: normal;
     }

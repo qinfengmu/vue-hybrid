@@ -29,6 +29,7 @@ let BridgeRegister = (function () {
     function BridgeRegister() {
         let _this = this;
         this.initBridge = setupWebViewJavascriptBridge().then((bridge) => {
+            console.log(bridge);
             _this.bridge = bridge;
             return bridge;
         })

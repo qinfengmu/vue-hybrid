@@ -10,4 +10,4 @@ let Hybrid =(function () {
     }
     return Hybrid;
 }());
-export {Hybrid};
+export { Hybrid };

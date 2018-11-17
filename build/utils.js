@@ -107,9 +107,12 @@ exports.entries = () => {
     const entriesFiles = glob.sync(PAGE_PATH+'/*/*.js');
     let map = {};
     entriesFiles.forEach((filePath)=>{
-        let fileName = filePath.substring(filePath.lastIndexOf('\/')+1,filePath.lastIndexOf('.'));
-        map[fileName] = filePath;
+        //let fileName = filePath.substring(filePath.lastIndexOf('\/')+1,filePath.lastIndexOf('.'));
+        //根据目录来划分模块
+        let directoryName = filePath.substring(PAGE_PATH.length+1,filePath.lastIndexOf('\/'));
+        map[directoryName] = filePath;
     });
+    console.log(map);
     return map;
 };
 
@@ -118,12 +121,13 @@ exports.htmlPlugin = ()=>{
     let arr = [];
     entriesHtml.forEach((filePath)=>{
         let fileName = filePath.substring(filePath.lastIndexOf('\/')+1,filePath.lastIndexOf('.'));
+        let directoryName = filePath.substring(PAGE_PATH.length+1,filePath.lastIndexOf('\/'));
         let conf = {
             template: filePath,
-            filename: fileName+'.html',
+            filename:directoryName+'/'+fileName+'.html',
             inject: true,
             // 页面模板需要加对应的js脚本，如果不加这行则每个页面都会引入所有的js脚本
-            chunks: ['manifest', 'vendor', fileName],
+            chunks: ['manifest', 'vendor', directoryName],
 
         };
         if(process.env.NODE_ENV === 'production'){
@@ -143,6 +147,6 @@ exports.htmlPlugin = ()=>{
         }
         arr.push(new HtmlWebpackPlugin(conf));
     });
-    console.log(arr);
+    //console.log(arr);
     return arr;
 };
